@@ -10,6 +10,7 @@ import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.Map;
 
 @RestController
 @RequestMapping("/api/courses")
@@ -38,6 +39,17 @@ public class CourseController {
         return new ResponseEntity<>(courseDTO, HttpStatus.OK);
     }
 
+    //api to fetch all the courses of a particular admin.
+    @GetMapping("/admin/{id}")
+    @PreAuthorize("hasRole('ADMIN')")
+    public ResponseEntity<List<CourseDTO>> getAdminsCourse(@PathVariable int id) {
+        System.out.println("the admin whose courses i need to retrieve = "+id);
+        List<CourseDTO> courseDTOS = courseService.getCoursesByAdminId(id);
+        return new ResponseEntity<>(courseDTOS, HttpStatus.OK);
+    }
+
+
+
     @PutMapping("{id}")
     @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<CourseDTO> updateCourse(@PathVariable int id, @RequestBody CourseDTO courseDTO) {
@@ -54,8 +66,21 @@ public class CourseController {
 
     @PreAuthorize("hasRole('ADMIN')")
     @PutMapping("/update/status/{id}")
-    public ResponseEntity<Void> updateCourseStatus(@RequestBody CourseDTO courseDTO, @PathVariable int id){
-        courseService.updateCourseStatus(courseDTO,id);
+    public ResponseEntity<Void> updateCourseStatus(@RequestBody Map<String,Integer> requestBody, @PathVariable int id){
+
+        if (requestBody.containsKey("activeId")) {
+            int activeId = requestBody.get("activeId");
+            courseService.updateCourseStatus(activeId, id);
+
+
+        } else {
+            System.out.println("activeId not found in request body"+requestBody);
+            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+
+        }
         return new ResponseEntity<>(HttpStatus.OK);
+
+
+
     }
 }

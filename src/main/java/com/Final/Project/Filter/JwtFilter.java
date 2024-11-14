@@ -1,6 +1,7 @@
 package com.Final.Project.Filter;
 
 import com.Final.Project.entity.Tokens;
+import com.Final.Project.exception.ProjectIllegalArgumentException;
 import com.Final.Project.repository.TokensDao;
 import com.Final.Project.repository.UsersDao;
 import com.Final.Project.service.JWTServiceImpl;
@@ -14,6 +15,7 @@ import jakarta.servlet.http.HttpServletResponse;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationContext;
+import org.springframework.http.HttpStatus;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -59,6 +61,9 @@ public class JwtFilter extends OncePerRequestFilter {
                 if (tokensOpt.isPresent()) {
                     Tokens storedTokens = tokensOpt.get();
                     boolean accessTokenValid = jwtServiceImpl.validateToken(accessToken, storedTokens.getAccessToken());
+                    if(!accessTokenValid){
+                        throw new ProjectIllegalArgumentException("Invalid Access Token", HttpStatus.UNAUTHORIZED);
+                    }
                     boolean refreshTokenValid = jwtServiceImpl.validateToken(refreshToken, storedTokens.getRefreshToken());
                     boolean isUserActive=usersDao.findByUserName(usernameFromAccessToken).get().isActive();
 

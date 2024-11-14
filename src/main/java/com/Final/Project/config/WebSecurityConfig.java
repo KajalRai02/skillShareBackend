@@ -56,9 +56,9 @@ public class WebSecurityConfig{
     public UrlBasedCorsConfigurationSource corsConfigurationSource() {
         CorsConfiguration config = new CorsConfiguration();
         config.setAllowedOrigins(List.of("http://localhost:5173"));  // Allow your React frontend
-        config.setAllowedMethods(List.of("GET", "POST", "PUT", "DELETE"));
+        config.setAllowedMethods(List.of("GET", "POST", "PUT", "DELETE", "OPTIONS"));
         config.setAllowedHeaders(List.of("*"));  // Allow all headers
-        config.setExposedHeaders(List.of("Authorization","Set-Cookie"));
+        config.setExposedHeaders(List.of("Authorization"));
         config.setAllowCredentials(true);  // If using cookies or authentication tokens
 
         UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();

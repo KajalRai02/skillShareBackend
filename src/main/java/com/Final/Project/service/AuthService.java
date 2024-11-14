@@ -6,7 +6,7 @@ import jakarta.servlet.http.HttpServletResponse;
 
 public interface AuthService {
 
-    void verify(UsersDTO usersDTO, HttpServletResponse response);
+    UsersDTO verify(UsersDTO usersDTO, HttpServletResponse response);
 
     //void Userlogout(UsersDTO usersDTO, HttpServletResponse response);
 

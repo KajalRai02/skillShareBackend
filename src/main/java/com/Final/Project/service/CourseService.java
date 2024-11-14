@@ -11,5 +11,7 @@ public interface CourseService {
     CourseDTO getCourseById( int id);
     CourseDTO updateCourse(int id, CourseDTO courseDTO);
     void deleteCourse(int id);
-    void updateCourseStatus(CourseDTO courseDTO, int id);
+    void updateCourseStatus(int activeId, int id);
+
+    List<CourseDTO> getCoursesByAdminId(int adminId);
 }

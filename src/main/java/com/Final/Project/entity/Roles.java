@@ -25,7 +25,7 @@ public class Roles {
     @Column(name = "is_active", nullable = false)
     private boolean isActive;
 
-    @OneToMany(mappedBy = "roles")
+    @OneToMany(mappedBy = "roles", cascade = CascadeType.ALL)
     private Set<Users> users=new HashSet<>();
 
     public Roles(String name) {

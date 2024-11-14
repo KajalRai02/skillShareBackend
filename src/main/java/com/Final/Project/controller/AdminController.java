@@ -9,6 +9,7 @@ import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.Map;
 
 @RestController
 @RequestMapping("/superAdmins")
@@ -40,14 +41,26 @@ public class AdminController {
     @DeleteMapping("/users/{id}")
     @PreAuthorize("hasRole('SUPER_ADMIN')")
     public ResponseEntity<Void>deleteUser(@PathVariable int id){
+        System.out.println("The user i am trying to delete"+id);
         usersService.deleteUserById(id);
         return new ResponseEntity<>(HttpStatus.OK);
     }
 
     @PutMapping("/users/{id}")
     @PreAuthorize("hasRole('SUPER_ADMIN')")
-    public ResponseEntity<String>UpdateAdminStatus(@RequestBody UsersDTO usersDTO, @PathVariable int id){
-        usersService.updateStatus(usersDTO,id);
+    public ResponseEntity<String>UpdateAdminStatus(@RequestBody Map<String,Integer> requestBody, @PathVariable int id){
+
+        if (requestBody.containsKey("activeId")) {
+            int activeId = requestBody.get("activeId");
+            usersService.updateStatus(activeId,id);
+
+
+        } else {
+            System.out.println("activeId not found in request body"+requestBody);
+            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+
+        }
+        //usersService.updateStatus(usersDTO,id);
         return new ResponseEntity<>(HttpStatus.OK);
     }
 

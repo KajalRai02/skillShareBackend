@@ -1,5 +1,6 @@
 package com.Final.Project.service;
 
+import com.Final.Project.dto.CourseDTO;
 import com.Final.Project.dto.UsersDTO;
 
 
@@ -17,6 +18,7 @@ public interface UsersService {
 
     void deleteUserById(int id);
 
-    String updateStatus(UsersDTO usersDTO, int id);
+    void updateStatus(int activeId, int id);
 
+    List<CourseDTO> getAllotedCourses(int id);
 }

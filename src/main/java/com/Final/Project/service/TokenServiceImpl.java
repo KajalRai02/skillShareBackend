@@ -148,6 +148,8 @@ public class TokenServiceImpl implements TokenService{
         Tokens tokens=tokensDao.findByUserId(userId).orElseThrow(()->
                 new ProjectIllegalArgumentException("User doesn't exist in token table",HttpStatus.NOT_FOUND));
 
+
+
         tokensDao.deleteById(tokens.getId());
     }
 

@@ -8,4 +8,7 @@ import java.util.Optional;
 @Repository
 public interface UsersDao extends JpaRepository<Users, Integer> {
     Optional<Users> findByUserName(String username);
+
+    // Find a user by their ID
+    Optional<Users> findById(int id);
 }

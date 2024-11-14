@@ -31,10 +31,11 @@ public class Users extends AuditorEntity {
     @Column(name = "is_active", nullable = false)
     private boolean isActive;
 
-    @ManyToOne(cascade = CascadeType.ALL)
+    @ManyToOne(cascade = {CascadeType.DETACH,CascadeType.MERGE,CascadeType.PERSIST,CascadeType.REFRESH})
     private Roles roles;
 
-    @ManyToMany(mappedBy = "students",fetch = FetchType.LAZY, cascade = {CascadeType.DETACH,CascadeType.MERGE,CascadeType.PERSIST,CascadeType.REFRESH})
+    //@ManyToMany(mappedBy = "students",fetch = FetchType.LAZY, cascade = {CascadeType.DETACH,CascadeType.MERGE,CascadeType.PERSIST,CascadeType.REFRESH})
+    @ManyToMany(mappedBy = "students",fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     private Set<Course>allocatedCourse;
 
 

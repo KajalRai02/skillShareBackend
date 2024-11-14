@@ -23,9 +23,9 @@ public class AuthController {
     private TokenService tokenService;
 
     @PostMapping("/login")
-    public ResponseEntity<String> login(@RequestBody UsersDTO usersDTO, HttpServletResponse response){
-        authService.verify(usersDTO,response);
-        return ResponseEntity.ok("login Successful");
+    public ResponseEntity<UsersDTO> login(@RequestBody UsersDTO usersDTO, HttpServletResponse response){
+        UsersDTO userResponseDTO = authService.verify(usersDTO,response);
+        return ResponseEntity.ok(userResponseDTO);
     }
 
     @PostMapping("/refresh-token")

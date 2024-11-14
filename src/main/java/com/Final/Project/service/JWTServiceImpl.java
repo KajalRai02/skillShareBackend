@@ -25,7 +25,7 @@ public class JWTServiceImpl {
     @Value("${jwt.secret}")
     private String secretKey;
 
-    private final long accessTokenValidity = 1000*60*20;
+    private final long accessTokenValidity = 1000*60*25;
     private final long refreshTokenValidity = 1000*60*60*24*7;
 
 //    public JWTServiceImpl() throws NoSuchAlgorithmException {

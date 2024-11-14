@@ -43,6 +43,7 @@ public class LessonServiceImpl implements LessonService {
 
         // Validation 2: CourseId in lesson DTO should be valid and the course should exist.
         Integer courseId = lessonDTO.getCourseId();
+        System.out.println("This is the course Id , i am trying to access: "+ courseId);
         if (courseId == null || courseId <= 0 || !courseDao.existsById(courseId)) {
             throw new ProjectIllegalArgumentException("Invalid Course ID: " + courseId,HttpStatus.BAD_REQUEST);
         }

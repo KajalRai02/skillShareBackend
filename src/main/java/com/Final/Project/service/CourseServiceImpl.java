@@ -78,7 +78,6 @@ public class CourseServiceImpl implements CourseService {
         List<Course> courses = courseDao.findAll();
         return courses
                 .stream()
-                .filter(Course::isActive)
                 .map(courseMapper::entityToDto)
                 .toList();
 
@@ -98,7 +97,23 @@ public class CourseServiceImpl implements CourseService {
     }
 
     @Override
+    public List<CourseDTO> getCoursesByAdminId(int adminId) {
+        //check if the user exists
+        Users admin = usersDao.findById(adminId).orElseThrow(() ->
+                new ProjectIllegalArgumentException("The admin with the provided ID does not exist.", HttpStatus.NOT_FOUND));
+
+        //if it does exist ---> fetch all the courses by admin id
+        List<Course> courses = courseDao.findByCreatedBy(adminId);
+
+        return courses.stream()
+                .map(courseMapper::entityToDto)
+                .collect(Collectors.toList());
+    }
+
+    @Override
     public CourseDTO updateCourse(int id, CourseDTO courseDTO) {
+
+
 
         //Validation : only the creator of course can update it.
         serviceHelper.checkCourseAuthority(id);
@@ -108,6 +123,7 @@ public class CourseServiceImpl implements CourseService {
 
         // Update course fields
         if (courseDTO.getCourseName() != null && !courseDTO.getCourseName().trim().isEmpty()) {
+            System.out.println("The new course name is = "+courseDTO.getCourseName());
             course.setCourseName(courseDTO.getCourseName());
         }
 
@@ -146,10 +162,9 @@ public class CourseServiceImpl implements CourseService {
 
         // Save and return updated course
         Course savedCourse = courseDao.save(course);
+        System.out.println("Update course="+savedCourse);
         return courseMapper.entityToDto(savedCourse);
     }
-
-
 
     //delete by id
     @Override
@@ -177,11 +192,7 @@ public class CourseServiceImpl implements CourseService {
     }
 
     @Override
-    public void updateCourseStatus(CourseDTO courseDTO, int id) {
-
-        if(courseDTO== null){
-            throw new ProjectIllegalArgumentException("No content",HttpStatus.NO_CONTENT);
-        }
+    public void updateCourseStatus(int activeId, int id) {
 
         serviceHelper.checkCourseAuthority(id);
 
@@ -191,7 +202,7 @@ public class CourseServiceImpl implements CourseService {
 
         //set the status of course
         boolean activeStatus;
-        if(courseDTO.getActiveId() == 1) {
+        if(activeId == 1) {
             activeStatus=true;
             course.setActive(true);
         }else{
@@ -212,6 +223,8 @@ public class CourseServiceImpl implements CourseService {
 
 
     }
+
+
 
 
 }
