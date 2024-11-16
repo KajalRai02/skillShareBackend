@@ -2,6 +2,7 @@ package com.Final.Project.controller;
 
 import com.Final.Project.dto.CourseDTO;
 import com.Final.Project.dto.UsersDTO;
+import com.Final.Project.entity.Users;
 import com.Final.Project.service.UsersService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -29,6 +30,21 @@ public class StudentController {
         List<CourseDTO> courseDTO = usersService.getAllotedCourses(id);
         return new ResponseEntity<>(courseDTO, HttpStatus.OK);
     }
+
+    //mapping to let student enroll course and add to it allocateddCourseId
+
+    @PostMapping("/{studentId}/courses/{courseId}")
+    public ResponseEntity<String> enrollCourse(@PathVariable int studentId, @PathVariable int courseId) {
+
+        boolean isAdded = usersService.addCourseToStudent(studentId, courseId);
+
+        if (isAdded) {
+            return new ResponseEntity<>("Course successfully added to student.", HttpStatus.OK);
+        } else {
+            return new ResponseEntity<>("Failed to add course or course already allocated.", HttpStatus.BAD_REQUEST);
+        }
+    }
+
 
 
 }

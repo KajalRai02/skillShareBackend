@@ -8,6 +8,7 @@ import com.Final.Project.entity.Users;
 import com.Final.Project.exception.ProjectIllegalArgumentException;
 import com.Final.Project.mapper.CourseMapper;
 import com.Final.Project.mapper.UsersMapper;
+import com.Final.Project.repository.CourseDao;
 import com.Final.Project.repository.TokensDao;
 import com.Final.Project.repository.UsersDao;
 import jakarta.transaction.Transactional;
@@ -26,6 +27,9 @@ public class UsersServiceImpl implements UsersService {
 
     @Autowired
     private UsersDao usersDao;
+
+    @Autowired
+    private CourseDao courseDao;
 
     @Autowired
     private RolesService rolesService;
@@ -97,7 +101,7 @@ public class UsersServiceImpl implements UsersService {
 
             System.out.println("No token found for the user.");
         }
-        System.out.println("id from service:"+id);
+
         usersDao.deleteById(id);
 
     }
@@ -142,6 +146,27 @@ public class UsersServiceImpl implements UsersService {
 //                .toList();
     }
 
+    @Override
+    public boolean addCourseToStudent(int studentId, int courseId) {
+        Users student = usersDao.findById(studentId).orElseThrow(() ->
+                new ProjectIllegalArgumentException("Student with id " + studentId + " not found", HttpStatus.NOT_FOUND)
+        );
+
+        Course course = courseDao.findById(courseId).orElseThrow(() ->
+                new ProjectIllegalArgumentException("Course with id " + courseId + " not found", HttpStatus.NOT_FOUND)
+        );
+
+        if (student.getAllocatedCourse().contains(course)) {
+            return false;
+        }
+        student.getAllocatedCourse().add(course);
+        course.getStudents().add(student);
+
+        usersDao.save(student);
+        courseDao.save(course);
+
+        return true;
+    }
 
 
 }

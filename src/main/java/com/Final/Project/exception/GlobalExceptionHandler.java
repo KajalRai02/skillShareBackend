@@ -1,5 +1,6 @@
 package com.Final.Project.exception;
 
+import io.jsonwebtoken.ExpiredJwtException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.ControllerAdvice;
@@ -11,6 +12,8 @@ import java.time.LocalDateTime;
 @ControllerAdvice
 public class GlobalExceptionHandler{
 
+
+
     @ExceptionHandler(ProjectIllegalArgumentException.class)
     public ResponseEntity<ExceptionResponse> handleIllegalArgumentException(ProjectIllegalArgumentException ex, WebRequest webRequest) {
         ExceptionResponse response = new ExceptionResponse(
@@ -19,6 +22,8 @@ public class GlobalExceptionHandler{
                 ex.getMessage(),
                 webRequest.getDescription(false)
         );
+
+        System.out.println("this is inside exception handler "+ex.getStatus());
 
         return new ResponseEntity<>(response, ex.getStatus());
     }

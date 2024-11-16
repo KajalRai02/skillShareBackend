@@ -80,6 +80,7 @@ public class TokenServiceImpl implements TokenService{
 
     @Override
     public String handleRefreshToken(HttpServletRequest request, HttpServletResponse response) {
+        System.out.println("The token is being refreshed");
         String refreshToken = extractRefreshTokenFromCookies(request);
 
         if (refreshToken == null) {

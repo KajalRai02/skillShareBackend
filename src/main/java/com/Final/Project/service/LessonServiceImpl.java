@@ -37,6 +37,7 @@ public class LessonServiceImpl implements LessonService {
 
     public LessonDTO saveLesson(LessonDTO lessonDTO) {
         //validation1 : LessonDto should not contain empty or null lessonName.
+        System.out.println("The new lesson name : "+lessonDTO.getLessonName());
         if (lessonDTO.getLessonName() == null || lessonDTO.getLessonName().trim().isEmpty()) {
             throw new ProjectIllegalArgumentException("Lesson name cannot be null or empty", HttpStatus.BAD_REQUEST);
         }
@@ -90,9 +91,15 @@ public class LessonServiceImpl implements LessonService {
 
     //update by id
     public LessonDTO updateLessonById(int id, LessonDTO lessonDTO) {
+
         //Validation 1: Fetch the data if the id is valid.
         Lesson lesson = lessonDao.findById(id).orElseThrow(() ->
                 new ProjectIllegalArgumentException("Cannot perform update. The given id doesn't exist.",HttpStatus.NOT_FOUND));
+
+//        System.out.println("The new lesson name : "+lessonDTO.getLessonName());
+//        if (lessonDTO.getLessonName() == null || lessonDTO.getLessonName().trim().isEmpty()) {
+//            throw new ProjectIllegalArgumentException("Lesson name cannot be null or empty", HttpStatus.BAD_REQUEST);
+//        }
 
         //if lesson name is not empty, update it.
         if (lessonDTO.getLessonName() != null && !lessonDTO.getLessonName().trim().isEmpty()) {

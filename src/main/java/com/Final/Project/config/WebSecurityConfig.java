@@ -48,10 +48,13 @@ public class WebSecurityConfig{
                 .httpBasic((Customizer.withDefaults()))
                 .sessionManagement(session->session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .addFilterBefore(jwtFilter, UsernamePasswordAuthenticationFilter.class)
+                .exceptionHandling(exceptionHandling -> exceptionHandling
+                        .authenticationEntryPoint(new JwtAuthenticationEntryPoint()))  // Handle 401 Unauthorized
                 .build();
 
         //httpSecurity.formLogin(Customizer.withDefaults()); [new request, new session on browser, so it keep on asking to login]
     }
+
     @Bean
     public UrlBasedCorsConfigurationSource corsConfigurationSource() {
         CorsConfiguration config = new CorsConfiguration();

@@ -1,10 +1,14 @@
 package com.Final.Project.service;
 
+import com.Final.Project.exception.ProjectIllegalArgumentException;
 import io.jsonwebtoken.Claims;
+import io.jsonwebtoken.ExpiredJwtException;
+import io.jsonwebtoken.JwtException;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.io.Decoders;
 import io.jsonwebtoken.security.Keys;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.http.HttpStatus;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Service;
 
@@ -24,6 +28,8 @@ public class JWTServiceImpl {
 
     @Value("${jwt.secret}")
     private String secretKey;
+
+
 
     private final long accessTokenValidity = 1000*60*25;
     private final long refreshTokenValidity = 1000*60*60*24*7;
@@ -75,22 +81,38 @@ public class JWTServiceImpl {
     }
 
     private <T> T extractClaim(String token, Function<Claims, T> claimResolver) {
+
         final Claims claims = extractAllClaims(token);
+
         return claimResolver.apply(claims);
     }
 
     private Claims extractAllClaims(String token) {
-        return Jwts.parser()
-                .verifyWith(getKey())
-                .build()
-                .parseSignedClaims(token)
-                .getPayload();
+        try{
+            return Jwts.parser()
+                    .verifyWith(getKey())
+                    .build()
+                    .parseSignedClaims(token)
+                    .getPayload();
+
+        }catch (ExpiredJwtException e) {
+            System.out.println("The token has expired");
+            // Handle expired token
+            throw new ProjectIllegalArgumentException("Invalid Token", HttpStatus.UNAUTHORIZED);
+            //throw new ProjectIllegalArgumentException("Expired JWT token: " + e.getMessage(), HttpStatus.UNAUTHORIZED);
+        } catch (JwtException e) {
+            System.out.println("Relogginng the  error");
+            throw new ProjectIllegalArgumentException("Invalid JWT token", HttpStatus.UNAUTHORIZED);
+
+        }
     }
+
+
 
     public boolean validateToken(String token, String storedToken) {
         return token.equals(storedToken) && !isTokenExpired(token);
     }
-    
+
 
     private boolean isTokenExpired(String token) {
         return extractExpiration(token).before(new Date());

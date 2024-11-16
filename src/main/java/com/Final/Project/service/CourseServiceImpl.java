@@ -26,13 +26,13 @@ import java.util.stream.Collectors;
 public class CourseServiceImpl implements CourseService {
 
     @Autowired
-    private CourseDao courseDao;  // to perform crud operations on course entity
+    private CourseDao courseDao;
 
     @Autowired
     private UsersDao usersDao;
 
     @Autowired
-    private CourseMapper courseMapper; //to map course entity to dto and vice versa
+    private CourseMapper courseMapper;
 
     @Autowired
     private LessonMapper lessonMapper;
@@ -113,8 +113,6 @@ public class CourseServiceImpl implements CourseService {
     @Override
     public CourseDTO updateCourse(int id, CourseDTO courseDTO) {
 
-
-
         //Validation : only the creator of course can update it.
         serviceHelper.checkCourseAuthority(id);
 
@@ -123,7 +121,7 @@ public class CourseServiceImpl implements CourseService {
 
         // Update course fields
         if (courseDTO.getCourseName() != null && !courseDTO.getCourseName().trim().isEmpty()) {
-            System.out.println("The new course name is = "+courseDTO.getCourseName());
+
             course.setCourseName(courseDTO.getCourseName());
         }
 
@@ -158,11 +156,9 @@ public class CourseServiceImpl implements CourseService {
             course.getStudents().clear();
             course.getStudents().addAll(updatedStudents);
         }
-
-
         // Save and return updated course
         Course savedCourse = courseDao.save(course);
-        System.out.println("Update course="+savedCourse);
+
         return courseMapper.entityToDto(savedCourse);
     }
 
@@ -187,8 +183,8 @@ public class CourseServiceImpl implements CourseService {
         // Delete the course
         courseDao.delete(course);
 
-        // Log the deletion
-        System.out.println("Course with ID " + courseId + " has been deleted.");
+          // Log the deletion
+//        System.out.println("Course with ID " + courseId + " has been deleted.");
     }
 
     @Override
@@ -218,8 +214,6 @@ public class CourseServiceImpl implements CourseService {
         }
 
         courseDao.save(course);
-        System.out.println("Course isActive after save: " + course.isActive());
-
 
 
     }

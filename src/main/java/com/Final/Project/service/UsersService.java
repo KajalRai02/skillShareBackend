@@ -2,6 +2,7 @@ package com.Final.Project.service;
 
 import com.Final.Project.dto.CourseDTO;
 import com.Final.Project.dto.UsersDTO;
+import com.Final.Project.entity.Users;
 
 
 import java.util.List;
@@ -21,4 +22,6 @@ public interface UsersService {
     void updateStatus(int activeId, int id);
 
     List<CourseDTO> getAllotedCourses(int id);
+
+    boolean addCourseToStudent(int studentId, int courseId);
 }
