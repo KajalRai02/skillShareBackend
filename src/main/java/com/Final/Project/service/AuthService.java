@@ -11,4 +11,6 @@ public interface AuthService {
     //void Userlogout(UsersDTO usersDTO, HttpServletResponse response);
 
     void Userlogout(HttpServletRequest request, HttpServletResponse response);
+
+    void validateUserName(UsersDTO usersDTO, HttpServletResponse response);
 }

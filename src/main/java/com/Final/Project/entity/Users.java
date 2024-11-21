@@ -19,7 +19,7 @@ public class Users extends AuditorEntity {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int id;
 
-    @Column(name="userName", nullable = false)
+    @Column(name="userName", nullable = false )
     private String userName;
 
     @Column(name="email", nullable = false)

@@ -8,7 +8,7 @@ import org.springframework.security.core.userdetails.UserDetails;
 import java.util.Collection;
 import java.util.List;
 
-public class UserPrincipal implements UserDetails {   //refer to current user/ user trying to login
+public class UserPrincipal implements UserDetails {   //refer to current user trying to login
 
     private Users users;
 

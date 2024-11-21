@@ -42,14 +42,14 @@ public class WebSecurityConfig{
                 .cors(cors -> cors.configurationSource(corsConfigurationSource()))  // Enable CORS
                 .csrf(customizer -> customizer.disable())
                 .authorizeHttpRequests(request->request
-                        .requestMatchers("/api/student/register","/api/auth/login", "/api/auth/refresh-token")
+                        .requestMatchers("/api/student/register","/api/auth/login", "/api/auth/refresh-token","/api/auth/check/username")
                         .permitAll()
                         .anyRequest().authenticated())
                 .httpBasic((Customizer.withDefaults()))
                 .sessionManagement(session->session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .addFilterBefore(jwtFilter, UsernamePasswordAuthenticationFilter.class)
                 .exceptionHandling(exceptionHandling -> exceptionHandling
-                        .authenticationEntryPoint(new JwtAuthenticationEntryPoint()))  // Handle 401 Unauthorized
+                        .authenticationEntryPoint(new JwtAuthenticationEntryPoint()))
                 .build();
 
         //httpSecurity.formLogin(Customizer.withDefaults()); [new request, new session on browser, so it keep on asking to login]
@@ -58,14 +58,14 @@ public class WebSecurityConfig{
     @Bean
     public UrlBasedCorsConfigurationSource corsConfigurationSource() {
         CorsConfiguration config = new CorsConfiguration();
-        config.setAllowedOrigins(List.of("http://localhost:5173"));  // Allow your React frontend
+        config.setAllowedOrigins(List.of("http://localhost:5173"));
         config.setAllowedMethods(List.of("GET", "POST", "PUT", "DELETE", "OPTIONS"));
-        config.setAllowedHeaders(List.of("*"));  // Allow all headers
+        config.setAllowedHeaders(List.of("*"));
         config.setExposedHeaders(List.of("Authorization"));
-        config.setAllowCredentials(true);  // If using cookies or authentication tokens
+        config.setAllowCredentials(true);
 
         UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
-        source.registerCorsConfiguration("/**", config);  // Apply CORS settings to all endpoints
+        source.registerCorsConfiguration("/**", config);
         return source;
     }
 

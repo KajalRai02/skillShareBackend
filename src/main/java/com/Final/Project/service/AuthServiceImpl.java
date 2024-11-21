@@ -17,6 +17,8 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 
+import java.util.Optional;
+
 @Service
 @Transactional
 public class AuthServiceImpl implements AuthService{
@@ -74,6 +76,17 @@ public class AuthServiceImpl implements AuthService{
 
     }
 
+    @Override
+    public void validateUserName(UsersDTO usersDTO, HttpServletResponse response) {
+        //username retrieve from request body
+        System.out.println(usersDTO.getUserName());
+       Optional<Users> user = usersDao.findByUserName(usersDTO.getUserName());
+       if(user.isPresent()){
+           throw  new ProjectIllegalArgumentException("Username already exists",HttpStatus.BAD_REQUEST);
+       }
+
+
+    }
 
 
 }

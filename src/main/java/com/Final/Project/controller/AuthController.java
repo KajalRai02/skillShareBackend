@@ -41,5 +41,13 @@ public class AuthController {
         return ResponseEntity.ok("The user is successfully logged out Successful");
     }
 
+    //an api call to check if the username already exists
+    @PostMapping("/check/username")
+    public ResponseEntity<Boolean> checkUsername(@RequestBody UsersDTO usersDTO, HttpServletResponse response){
+        authService.validateUserName(usersDTO,response);
+        return ResponseEntity.ok(true);
+
+    }
+
 
 }

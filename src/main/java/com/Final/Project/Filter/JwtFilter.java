@@ -54,7 +54,7 @@ public class JwtFilter extends OncePerRequestFilter {
 
     @Autowired
     @Qualifier("handlerExceptionResolver")
-    private HandlerExceptionResolver exceptionResolver;  // Inject HandlerExceptionResolver
+    private HandlerExceptionResolver exceptionResolver;
 
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws ServletException, IOException {
@@ -100,7 +100,7 @@ public class JwtFilter extends OncePerRequestFilter {
                     String isRefreshed = tokenService.handleRefreshToken(request,response);
                     return;
                 }
-                // Forward custom exceptions as well
+
                 exceptionResolver.resolveException(request, response, null, e);
 
             }catch (ProjectIllegalArgumentException ex){
@@ -110,6 +110,46 @@ public class JwtFilter extends OncePerRequestFilter {
 
         }
     }
+
+
+    private void setSecurityContext(HttpServletRequest request, UserDetails userDetails) {
+        UsernamePasswordAuthenticationToken authToken = new UsernamePasswordAuthenticationToken(userDetails, null, userDetails.getAuthorities());
+        authToken.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
+        SecurityContextHolder.getContext().setAuthentication(authToken);
+    }
+
+    private String extractTokenFromHeader(HttpServletRequest request) {
+        String authHeader = request.getHeader("Authorization");
+        if (authHeader != null && authHeader.startsWith("Bearer ")) {
+            return authHeader.substring(7);
+        }
+        return null;
+    }
+
+    private String extractTokenFromCookie(HttpServletRequest request) {
+
+        if (request.getCookies() != null) {
+            for (Cookie cookie : request.getCookies()) {
+                if ("refresh-token".equals(cookie.getName())) {
+                    return cookie.getValue();
+                }
+            }
+        }
+        return null;
+    }
+}
+
+
+
+
+
+
+
+
+
+
+
+
 
 //    @Override
 //    protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws ServletException, IOException {
@@ -145,32 +185,3 @@ public class JwtFilter extends OncePerRequestFilter {
 //
 //        filterChain.doFilter(request, response);
 //    }
-
-    private void setSecurityContext(HttpServletRequest request, UserDetails userDetails) {
-        UsernamePasswordAuthenticationToken authToken = new UsernamePasswordAuthenticationToken(userDetails, null, userDetails.getAuthorities());
-        authToken.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
-        SecurityContextHolder.getContext().setAuthentication(authToken);
-    }
-
-    private String extractTokenFromHeader(HttpServletRequest request) {
-        String authHeader = request.getHeader("Authorization");
-        if (authHeader != null && authHeader.startsWith("Bearer ")) {
-            return authHeader.substring(7);
-        }
-        return null;
-    }
-
-    private String extractTokenFromCookie(HttpServletRequest request) {
-        // Assuming that the refresh token is stored in a cookie named "refresh-token"
-        if (request.getCookies() != null) {
-            for (Cookie cookie : request.getCookies()) {
-                if ("refresh-token".equals(cookie.getName())) {
-                    return cookie.getValue();
-                }
-            }
-        }
-        return null;
-    }
-}
-
-
